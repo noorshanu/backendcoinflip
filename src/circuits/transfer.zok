@@ -1,0 +1,32 @@
+import "hashes/poseidon/poseidon.zok";
+
+def main(
+    private field oldCommitment,
+    private field inputAmount,
+    private field transferAmount,
+    private field tokenAddress,
+    private field privateAddress,
+    private field oldBlinding,
+    private field recipientAddress,
+    private field newBlinding,
+    private field changeBlinding
+) -> field[3] {
+
+    assert(transferAmount > 0);       // Transfer amount must be positive
+    assert(transferAmount <= inputAmount); // Transfer amount must be ≤ input amount
+
+    // Recalculate old commitment
+    field[4] oldInputs = [inputAmount, tokenAddress, privateAddress, oldBlinding];
+    field calculatedCommitment = poseidon(oldInputs);
+    assert(oldCommitment == calculatedCommitment); // Ensure commitment matches
+
+    // Compute new commitment for recipient
+    field[4] newInputs = [transferAmount, tokenAddress, recipientAddress, newBlinding];
+    field newCommitment = poseidon(newInputs);
+
+    // Compute change commitment (remaining balance)
+    field[4] changeInputs = [(inputAmount - transferAmount), tokenAddress, privateAddress, changeBlinding];
+    field changeCommitment = poseidon(changeInputs);
+
+    return [calculatedCommitment, newCommitment, changeCommitment];
+}

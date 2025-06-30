@@ -1,0 +1,16 @@
+import "hashes/poseidon/poseidon.zok";
+
+def main(
+    field publicAmount,
+    private field tokenAddress,
+    private field privateAddress,
+    private field blinding
+) -> field { 
+    assert(publicAmount > 0); // Ensure amount is positive
+    
+    // Compute the commitment hash using Poseidon hash
+    field[4] inputs = [publicAmount, tokenAddress, privateAddress, blinding];
+    field commitmentHash = poseidon(inputs);
+
+    return commitmentHash;
+}
