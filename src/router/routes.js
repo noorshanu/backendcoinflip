@@ -158,6 +158,14 @@ router.get("/get-all-wallets/:centerId", async (req, res) => {
 router.get("/get-game/:gameId", async (req, res) => {
   const {gameId} = req.params;
   const game = await GameModel.findById(gameId);
+  
+  if (!game) {
+    return res.status(404).json({
+      success: false,
+      message: "Game not found"
+    });
+  }
+  
   res.status(200).json({
     success: true,
     message: "Game fetched successfully",
@@ -304,6 +312,14 @@ router.post("/add-points", async (req, res) => {
 router.get("/get-points/:centerId", async (req, res) => {
   const {centerId} = req.params;
   const user = await UserModel.findById(centerId);
+  
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found"
+    });
+  }
+  
   res.status(200).json({
     success: true,
     message: "Points fetched successfully",
@@ -338,6 +354,14 @@ router.get("/get-all-centers", async (req, res) => {
 router.get("/get-center/:centerId", async (req, res) => {
   const {centerId} = req.params;
   const center = await UserModel.findById(centerId);
+  
+  if (!center) {
+    return res.status(404).json({
+      success: false,
+      message: "Center not found"
+    });
+  }
+  
   res.status(200).json({
     success: true,
     message: "Center fetched successfully",
